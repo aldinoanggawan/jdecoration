@@ -53,7 +53,7 @@ export const packageType = defineType({
       type: 'string',
       options: {
         list: [
-          {title: 'Starting from (e.g. "From RM1,200")', value: 'from'},
+          {title: 'Starting from (e.g. "From IDR450,000")', value: 'from'},
           {title: 'Fixed price', value: 'fixed'},
         ],
         layout: 'radio',
