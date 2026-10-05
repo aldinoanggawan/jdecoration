@@ -1,17 +1,14 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 import {PackageIcon} from '@sanity/icons/Package'
-import {orderRankField, orderRankOrdering} from '@sanity/orderable-document-list'
 
-export const packageType = defineType({
-  name: 'package',
+type PackageParent = {title?: string; priceType?: string}
+
+export const packageItemType = defineType({
+  name: 'packageItem',
   title: 'Package',
-  type: 'document',
+  type: 'object',
   icon: PackageIcon,
-  orderings: [orderRankOrdering],
   fields: [
-    // Hidden field that powers drag-to-reorder in the Packages list
-    orderRankField({type: 'package'}),
-
     defineField({
       name: 'images',
       title: 'Photos',
@@ -25,6 +22,7 @@ export const packageType = defineType({
     defineField({
       name: 'title',
       title: 'Package name',
+      description: 'For example: Package 1, Custom Package',
       type: 'string',
       validation: (rule) => [
         rule.required().error('Give the package a name.'),
@@ -36,16 +34,15 @@ export const packageType = defineType({
       title: 'Web address',
       description: 'Tap "Generate" after typing the package name.',
       type: 'slug',
-      options: {source: 'title', maxLength: 80},
+      options: {
+        source: (_doc, {parent}) => (parent as PackageParent | undefined)?.title ?? '',
+        maxLength: 80,
+        // Disable Sanity's default check, which would compare against packages in
+        // OTHER categories too. Uniqueness within a category is checked on the
+        // category's `packages` array instead.
+        isUnique: () => true,
+      },
       validation: (rule) => rule.required().error('Tap "Generate" to create the web address.'),
-    }),
-    defineField({
-      name: 'category',
-      title: 'Category',
-      type: 'reference',
-      to: [{type: 'category'}],
-      options: {disableNew: true}, // categories are managed in their own list
-      validation: (rule) => rule.required().error('Pick a category.'),
     }),
     defineField({
       name: 'priceType',
@@ -53,8 +50,9 @@ export const packageType = defineType({
       type: 'string',
       options: {
         list: [
-          {title: 'Starting from (e.g. "From IDR450,000")', value: 'from'},
+          {title: 'Starting from (e.g. "From IDR1.500.000")', value: 'from'},
           {title: 'Fixed price', value: 'fixed'},
+          {title: 'Custom – ask via WhatsApp', value: 'custom'},
         ],
         layout: 'radio',
       },
@@ -66,10 +64,14 @@ export const packageType = defineType({
       title: 'Price (IDR)',
       description: 'Digits only, no "IDR" and no dots. Example: 1500000',
       type: 'number',
-      validation: (rule) => [
-        rule.required().error('Enter the price.'),
-        rule.integer().positive().error('Use digits only, for example 1500000.'),
-      ],
+      hidden: ({parent}) => (parent as PackageParent | undefined)?.priceType === 'custom',
+      validation: (rule) =>
+        rule.custom((value, context) => {
+          const parent = context.parent as PackageParent | undefined
+          if (parent?.priceType === 'custom') return true
+          if (typeof value !== 'number') return 'Enter the price.'
+          return (Number.isInteger(value) && value > 0) || 'Use digits only, for example 1500000.'
+        }),
     }),
     defineField({
       name: 'description',
@@ -100,9 +102,11 @@ export const packageType = defineType({
     },
     prepare({title, media, price, priceType, isActive}) {
       const priceLabel =
-        typeof price === 'number'
-          ? `${priceType === 'from' ? 'From ' : ''}IDR${price.toLocaleString('en-MY')}`
-          : 'No price yet'
+        priceType === 'custom'
+          ? 'Custom'
+          : typeof price === 'number'
+            ? `${priceType === 'from' ? 'From ' : ''}IDR${price.toLocaleString('id-ID')}`
+            : 'No price yet'
       return {
         title: title || 'Untitled package',
         subtitle: `${priceLabel}${isActive === false ? ' · Hidden' : ''}`,

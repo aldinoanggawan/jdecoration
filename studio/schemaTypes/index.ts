@@ -1,5 +1,5 @@
 import {categoryType} from './category'
-import {packageType} from './package'
+import {packageItemType} from './packageItem'
 import {siteSettingsType} from './siteSettings'
 
-export const schemaTypes = [categoryType, packageType, siteSettingsType]
+export const schemaTypes = [categoryType, packageItemType, siteSettingsType]
