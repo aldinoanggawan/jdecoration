@@ -1,0 +1,24 @@
+---
+import { packageToCard } from '../lib/mappers';
+import { getCategories } from '../lib/queries';
+import Card from './Card.astro';
+
+const categories = await getCategories();
+---
+
+<section class='bg-cream p-3'>
+  {
+    categories.map((c) => {
+      return (
+        <div class='mb-10'>
+          <h1>{c.title}</h1>
+          <div class='flex gap-10'>
+            {c.packages.map((p) => {
+              return p ? <Card {...packageToCard(p, c.slug)} /> : null;
+            })}
+          </div>
+        </div>
+      );
+    })
+  }
+</section>
