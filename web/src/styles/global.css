@@ -1,1 +1,9 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-cream: rgb(251, 248, 245);
+  --color-sand: rgb(239, 230, 224);
+  --color-dusty-rose: rgb(192, 142, 136);
+  --color-taupe: rgb(154, 127, 120);
+  --color-cocoa: rgb(107, 90, 84);
+}

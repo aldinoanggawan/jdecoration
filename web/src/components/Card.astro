@@ -1,0 +1,89 @@
+---
+import {
+  CARD_IMAGE_HEIGHT,
+  CARD_IMAGE_SRC_HEIGHT,
+  CARD_IMAGE_SRC_WIDTH,
+} from '../lib/images';
+import type { CardProps } from '../types/ui';
+
+type Props = CardProps;
+
+const { description, href, imgSrc, list, price, title } = Astro.props;
+
+const VISIBLE_COUNT = 3;
+const items = list ?? [];
+const visibleItems = items.slice(0, VISIBLE_COUNT);
+const extraItems = items.slice(VISIBLE_COUNT);
+---
+
+<div
+  data-card
+  class='min-w-60 max-w-70 w-full overflow-hidden rounded-xl border border-sand'
+>
+  <div
+    class='overflow-hidden bg-zinc-300'
+    style={{ height: `${CARD_IMAGE_HEIGHT}px` }}
+  >
+    <img
+      src={imgSrc}
+      alt=''
+      width={CARD_IMAGE_SRC_WIDTH}
+      height={CARD_IMAGE_SRC_HEIGHT}
+      loading='lazy'
+      decoding='async'
+      class='w-full h-full object-cover'
+    />
+  </div>
+  <div class='p-4 flex flex-col gap-2 bg-white'>
+    <h2 class='font-semibold text-xl'>{title}</h2>
+    <p class='text-xs text-cocoa'>
+      {description}
+    </p>
+    {
+      items.length > 0 && (
+        <ul class='list-disc marker:text-dusty-rose list-inside text-xs'>
+          {visibleItems.map((item) => (
+            <li>
+              <span class='-ml-1'>{item}</span>
+            </li>
+          ))}
+          {extraItems.length > 0 && (
+            <>
+              {extraItems.map((item) => (
+                <li data-extra class='hidden'>
+                  <span class='-ml-1'>{item}</span>
+                </li>
+              ))}
+              <li data-toggle class='list-none cursor-pointer'>
+                <span class='font-medium text-xs text-taupe'>
+                  + {extraItems.length} more
+                </span>
+              </li>
+            </>
+          )}
+        </ul>
+      )
+    }
+    <p class='text-sm font-semibold my-2'>{price}</p>
+    <a
+      href={href}
+      class='inline-block text-center border-1 p-3 rounded-3xl text-xs text-white font-semibold bg-black'
+    >
+      View details
+    </a>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('[data-card]').forEach((card) => {
+    const toggle = card.querySelector('[data-toggle]');
+    const extras = card.querySelectorAll('[data-extra]');
+    const label = toggle?.querySelector('span');
+    const moreText = label?.textContent;
+
+    toggle?.addEventListener('click', () => {
+      extras.forEach((li) => li.classList.toggle('hidden'));
+      const expanded = !extras[0]?.classList.contains('hidden');
+      if (label) label.textContent = expanded ? 'Show less' : (moreText ?? '');
+    });
+  });
+</script>
