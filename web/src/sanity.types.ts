@@ -21,8 +21,8 @@ export type SiteSettings = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  businessName?: string;
-  whatsappNumber?: string;
+  businessName: string;
+  whatsappNumber: string;
   about?: string;
   instagramUrl?: string;
 };
@@ -44,11 +44,11 @@ export type PackageItem = {
     _type: "image";
     _key: string;
   }>;
-  title?: string;
-  slug?: Slug;
-  priceType?: "from" | "fixed" | "custom";
+  title: string;
+  slug: Slug;
+  priceType: "from" | "fixed" | "custom";
   price?: number;
-  description?: string;
+  description: string;
   isActive?: boolean;
 };
 
@@ -59,8 +59,8 @@ export type Category = {
   _updatedAt: string;
   _rev: string;
   orderRank?: string;
-  title?: string;
-  slug?: Slug;
+  title: string;
+  slug: Slug;
   packages?: Array<
     {
       _key: string;
@@ -70,24 +70,24 @@ export type Category = {
 
 export type Slug = {
   _type: "slug";
-  current?: string;
+  current: string;
   source?: string;
 };
 
 export type SanityImageCrop = {
   _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
 };
 
 export type SanityImageHotspot = {
   _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
+  x: number;
+  y: number;
+  height: number;
+  width: number;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -111,9 +111,9 @@ export type SanityImagePalette = {
 
 export type SanityImageDimensions = {
   _type: "sanity.imageDimensions";
-  height?: number;
-  width?: number;
-  aspectRatio?: number;
+  height: number;
+  width: number;
+  aspectRatio: number;
 };
 
 export type SanityImageMetadata = {
@@ -139,14 +139,14 @@ export type SanityFileAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
+  sha1hash: string;
+  extension: string;
+  mimeType: string;
+  size: number;
+  assetId: string;
   uploadId?: string;
-  path?: string;
-  url?: string;
+  path: string;
+  url: string;
   source?: SanityAssetSourceData;
 };
 
@@ -168,14 +168,14 @@ export type SanityImageAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
+  sha1hash: string;
+  extension: string;
+  mimeType: string;
+  size: number;
+  assetId: string;
   uploadId?: string;
-  path?: string;
-  url?: string;
+  path: string;
+  url: string;
   metadata?: SanityImageMetadata;
   source?: SanityAssetSourceData;
 };
@@ -215,8 +215,8 @@ export type SETTINGS_QUERY_RESULT =
       instagramUrl: null;
     }
   | {
-      businessName: string | null;
-      whatsappNumber: string | null;
+      businessName: string;
+      whatsappNumber: string;
       about: string | null;
       instagramUrl: string | null;
     }
