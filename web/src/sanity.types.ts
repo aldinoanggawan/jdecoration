@@ -222,10 +222,39 @@ export type SETTINGS_QUERY_RESULT =
     }
   | null;
 
+// Source: ../web/src/lib/queries.ts
+// Variable: CATEGORIES_QUERY
+// Query: *[_type == "category" && defined(slug.current)] | order(orderRank) {  title,  "slug": slug.current,  "packages": coalesce(packages[isActive != false && defined(slug.current)] {    _key, title, "slug": slug.current, price, priceType, description,    images[] { ..., "lqip": asset->metadata.lqip, "dimensions": asset->metadata.dimensions }  }, [])}
+export type CATEGORIES_QUERY_RESULT = Array<{
+  title: string;
+  slug: string;
+  packages:
+    | Array<{
+        _key: string;
+        title: string;
+        slug: string;
+        price: number | null;
+        priceType: "custom" | "fixed" | "from";
+        description: string;
+        images: Array<{
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+          _key: string;
+          lqip: string | null;
+          dimensions: SanityImageDimensions | null;
+        }> | null;
+      }>
+    | Array<never>;
+}>;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
     '*[_id == "siteSettings"][0]{ businessName, whatsappNumber, about, instagramUrl }': SETTINGS_QUERY_RESULT;
+    '*[_type == "category" && defined(slug.current)] | order(orderRank) {\n  title,\n  "slug": slug.current,\n  "packages": coalesce(packages[isActive != false && defined(slug.current)] {\n    _key, title, "slug": slug.current, price, priceType, description,\n    images[] { ..., "lqip": asset->metadata.lqip, "dimensions": asset->metadata.dimensions }\n  }, [])\n}': CATEGORIES_QUERY_RESULT;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too
